@@ -1,9 +1,17 @@
 {% extends 'layout.twig' %}
 
 {% block content %}
-<h1>Encurtador de URLs</h1>
-<form action="{{ path_for('shorten') }}" method="POST">
-    <input type="url" name="long_url" placeholder="Insira a URL longa aqui" required>
-    <button type="submit">Encurtar</button>
-</form>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h1 class="text-center">Encurtador de URLs</h1>
+        <form action="{{ path_for('shorten') }}" method="POST" class="mt-4">
+            <div class="mb-3">
+                <input type="url" name="long_url" class="form-control" placeholder="Insira a URL longa aqui" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Encurtar</button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

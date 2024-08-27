@@ -11,8 +11,7 @@ final class CreateUrlsLogsTable extends AbstractMigration
         $table = $this->table('urls_logs', ['id' => false, 'primary_key' => 'id']);
         $table
             ->addColumn('id', 'integer', [
-                'limit' => 16,
-                'signed' => false,
+                'identity' => true,
                 'null' => false
             ])
             ->addColumn('uuid', 'string', [

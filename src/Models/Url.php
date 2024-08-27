@@ -34,7 +34,9 @@ class Url
         $sql = 'SELECT * FROM urls WHERE short_url_path = :short_url_path LIMIT 1';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':short_url_path' => $shortUrlPath]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $result !== false ? $result : null;
     }
 
     private function generateUuid(): string
