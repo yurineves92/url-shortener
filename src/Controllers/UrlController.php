@@ -8,6 +8,7 @@ use Slim\Views\Twig;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use PDO;
+use Exception;
 
 class UrlController
 {
@@ -32,16 +33,31 @@ class UrlController
         $params = (array) $request->getParsedBody();
         $longUrl = $params['long_url'] ?? '';
         $shortUrlPath = substr(md5(uniqid((string) mt_rand(), true)), 0, 7);
-        $uuid = bin2hex(random_bytes(16));
 
-        $this->urlModel->createUrl($longUrl, $shortUrlPath, 'RANDOM', 0.00, null, $uuid);
+        try {
+            $uuid = bin2hex(random_bytes(16));
+            $this->urlModel->createUrl($longUrl, $shortUrlPath, 'RANDOM', 0.00, null, $uuid);
 
-        $uri = $request->getUri();
-        $baseUrl = $uri->getScheme() . '://' . $uri->getHost() . ($uri->getPort() ? ':' . $uri->getPort() : '');
+            $uri = $request->getUri();
+            $baseUrl = $uri->getScheme() . '://' . $uri->getHost() . ($uri->getPort() ? ':' . $uri->getPort() : '');
 
-        return $this->view->render($response, 'result.twig', [
-            'short_url' => $baseUrl . '/' . $shortUrlPath
-        ]);
+            $message = 'URL encurtada com sucesso!';
+            $alertType = 'success';
+
+            return $this->view->render($response, 'result.twig', [
+                'short_url' => $baseUrl . '/' . $shortUrlPath,
+                'message' => $message,
+                'alertType' => $alertType
+            ]);
+        } catch (Exception $e) {
+            $message = 'Erro ao encurtar a URL: ' . $e->getMessage();
+            $alertType = 'danger';
+
+            return $this->view->render($response, 'home.twig', [
+                'message' => $message,
+                'alertType' => $alertType
+            ]);
+        }
     }
 
     public function redirect(Request $request, Response $response, array $args)

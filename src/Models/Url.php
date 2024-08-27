@@ -13,10 +13,13 @@ class Url
         $this->pdo = $pdo;
     }
 
-    public function createUrl(string $longUrl, string $shortUrlPath, string $type = 'RANDOM', float $economyRate = 0.00, ?string $meta = null): ?string
+    public function createUrl(string $longUrl, string $shortUrlPath, string $type = 'RANDOM', ?string $meta = null): ?string
     {
         $uuid = $this->generateUuid();
+        $economyRate = ceil(100 - ((strlen($shortUrlPath) * 100) / strlen($longUrl)));
+        
         $sql = 'INSERT INTO urls (uuid, long_url, short_url_path, type, economy_rate, meta, created_at) VALUES (:uuid, :long_url, :short_url_path, :type, :economy_rate, :meta, NOW())';
+        
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':uuid' => $uuid,
@@ -26,6 +29,7 @@ class Url
             ':economy_rate' => $economyRate,
             ':meta' => $meta
         ]);
+        
         return $uuid;
     }
 
