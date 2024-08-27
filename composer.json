@@ -6,5 +6,14 @@
             "Yurineves92\\UrlShortener\\": "src/"
         }
     },
-    "require": {}
+    "scripts": {
+        "start": "php -S localhost:8000 -t public"
+    },
+    "require": {
+        "slim/slim": "^4.0",
+        "slim/psr7": "^1.0",
+        "slim/twig-view": "^3.0",
+        "robmorgan/phinx": "^0.12.7",
+        "symfony/yaml": "^6.4"
+    }
 }
