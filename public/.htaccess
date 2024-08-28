@@ -1,0 +1,12 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+Options -Indexes
+
+<FilesMatch "\.(jpg|jpeg|png|gif|css|js|ico|svg|woff|woff2|ttf)$">
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+</FilesMatch>
