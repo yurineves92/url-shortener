@@ -7,6 +7,7 @@ Este é um projeto simples de encurtador de URLs desenvolvido em PHP usando o Sl
 - Encurtar URLs longas.
 - Redirecionamento usando URLs curtas.
 - Registro de logs de acesso às URLs curtas.
+- Listagem de urls curtas.
 
 ## Tecnologias Utilizadas
 
@@ -70,4 +71,4 @@ A aplicação estará disponível em http://localhost:8080.
 - public/: Pasta pública do servidor, contendo o index.php que inicia a aplicação.
 - migrations/: Diretório de migrações do banco de dados.
 - views/: Arquivos Twig para renderização das páginas HTML.
-- twig/: Uso da extensão twig dentor do projeto.
+- twig/: Uso da extensão twig dentro do projeto.
