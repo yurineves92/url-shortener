@@ -8,6 +8,7 @@ Este é um projeto simples de encurtador de URLs desenvolvido em PHP usando o Sl
 - Redirecionamento usando URLs curtas.
 - Registro de logs de acesso às URLs curtas.
 - Listagem de urls curtas.
+- Gerar QRCode da urls curtas.
 
 ## Tecnologias Utilizadas
 
@@ -18,6 +19,7 @@ Este é um projeto simples de encurtador de URLs desenvolvido em PHP usando o Sl
 - **Phinx**: Ferramenta de migração de banco de dados.
 - **PHP-DI**: Container de injeção de dependências para PHP.
 - **dotenv**: Biblioteca para carregar variáveis de ambiente de um arquivo `.env`.
+- **qr-code**: Biblioteca que gera o QRCode.
 
 ## Requisitos
 

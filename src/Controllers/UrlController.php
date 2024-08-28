@@ -7,6 +7,11 @@ use App\Models\UrlLog;
 use Slim\Views\Twig;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Encoding\Encoding;
+
 use PDO;
 use Exception;
 
@@ -84,5 +89,33 @@ class UrlController
             'recent_urls' => $recentUrls,
             'current_route' => 'recentUrls'
         ]);
+    }
+
+    public function generateQrCode(Request $request, Response $response, array $args): Response
+    {
+        $shortUrlPath = $args['short_url_path'];
+        $url = $this->urlModel->getUrlByShortPath($shortUrlPath);
+
+        $uri = $request->getUri();
+        $baseUrl = $uri->getScheme() . '://' . $uri->getHost() . ($uri->getPort() ? ':' . $uri->getPort() : '');
+
+        if (is_array($url)) {
+            $qrCode = Builder::create()
+                ->writer(new PngWriter())
+                ->data($baseUrl . '/' . $shortUrlPath)
+                ->encoding(new Encoding('UTF-8'))
+                ->size(300)
+                ->margin(10)
+                ->build();
+
+            $output = $qrCode->getString();
+            $response->getBody()->write($output);
+
+            return $response
+                ->withHeader('Content-Type', 'image/png')
+                ->withHeader('Content-Disposition', 'inline; filename="qrcode.png"');
+        } else {
+            return $response->withHeader('Location', '/not-found')->withStatus(302);
+        }
     }
 }
