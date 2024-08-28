@@ -75,4 +75,12 @@ class UrlController
             return $response->withStatus(404);
         }
     }
+
+    public function recentUrls(Request $request, Response $response): Response
+    {
+        $recentUrls = $this->urlModel->getRecentUrls();
+        return $this->view->render($response, 'recent_urls.twig', [
+            'recent_urls' => $recentUrls
+        ]);
+    }
 }
