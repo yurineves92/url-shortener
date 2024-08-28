@@ -1,18 +1,18 @@
 <?php
 
 use Slim\Factory\AppFactory;
-
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
-
 use DI\Container;
-
 use App\Controllers\UrlController;
 use App\Twig\TwigExtension;
-
 use Slim\Interfaces\RouteParserInterface;
+use Dotenv\Dotenv;
 
 require __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 $container = new Container();
 
@@ -26,9 +26,9 @@ $container->set('view', function ($container) use ($app) {
 });
 
 $container->set('pdo', function () {
-    $dsn = 'mysql:host=localhost;dbname=url_shortener_db';
-    $username = 'root';
-    $password = '';
+    $dsn = $_ENV['DB_DSN'];
+    $username = $_ENV['DB_USER'];
+    $password = $_ENV['DB_PASS'];
     return new PDO($dsn, $username, $password);
 });
 

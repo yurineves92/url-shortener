@@ -25,7 +25,9 @@ class UrlController
 
     public function home(Request $request, Response $response): Response
     {
-        return $this->view->render($response, 'home.twig');
+        return $this->view->render($response, 'home.twig',[
+            'current_route' => 'home'
+        ]);
     }
 
     public function shorten(Request $request, Response $response)
@@ -80,7 +82,8 @@ class UrlController
     {
         $recentUrls = $this->urlModel->getRecentUrls();
         return $this->view->render($response, 'recent_urls.twig', [
-            'recent_urls' => $recentUrls
+            'recent_urls' => $recentUrls,
+            'current_route' => 'recentUrls'
         ]);
     }
 }
