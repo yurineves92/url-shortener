@@ -62,10 +62,12 @@ A aplicação estará disponível em http://localhost:8080.
 - GET /: Página inicial com o formulário para encurtar uma URL.
 - POST /: Encurta a URL enviada no formulário.
 - GET /{short_url_path}: Redireciona para a URL original associada ao short_url_path.
-- 
+- GET /recent-urls: Listagem de urls encurtadas. 
+
 ## Estrutura do Projeto
 
 - src/: Contém os arquivos principais da aplicação, incluindo modelos, controladores e configurações.
 - public/: Pasta pública do servidor, contendo o index.php que inicia a aplicação.
 - migrations/: Diretório de migrações do banco de dados.
 - views/: Arquivos Twig para renderização das páginas HTML.
+- twig/: Uso da extensão twig dentor do projeto.
