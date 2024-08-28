@@ -73,8 +73,7 @@ class UrlController
 
             return $response->withHeader('Location', $url['long_url'])->withStatus(302);
         } else {
-            $response->getBody()->write('URL não encontrada.');
-            return $response->withStatus(404);
+            return $response->withHeader('Location', '/not-found')->withStatus(302);
         }
     }
 
