@@ -74,7 +74,7 @@ class UrlController
             return $response->withHeader('Location', $url['long_url'])->withStatus(302);
         } else {
             return $response->withHeader('Location', '/not-found')->withStatus(302);
-        }
+        }   
     }
 
     public function recentUrls(Request $request, Response $response): Response
