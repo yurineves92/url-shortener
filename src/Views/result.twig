@@ -1,0 +1,16 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h1 class="text-center">URL Encurtada</h1>
+
+        {% include 'message/_alert.twig' %}
+
+        <p class="text-center">Sua URL encurtada é: <a href="{{ short_url }}" target="_blank">{{ short_url }}</a></p>
+        <div class="d-grid">
+            <a href="/" class="btn btn-secondary">Encurtar outra URL</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

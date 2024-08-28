@@ -1,0 +1,51 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Últimas URLs Encurtadas</h2>
+
+    {% include 'message/_alert.twig' %}
+    
+    {% if recent_urls is not empty %}
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>URL Encurtada</th>
+                <th>URL Original</th>
+                <th>Taxa de Economia</th>
+                <th>Data de Criação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for url in recent_urls %}
+            <tr>
+                <td><a href="{{ url.short_url_path }}" target="_blank">{{ url.short_url_path }}</a></td>
+                <td>
+                    <a href="{{ url.long_url }}" target="_blank"
+                       class="text-truncate"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="top"
+                       title="{{ url.long_url }}">
+                       {{ url.long_url | slice(0, 50) ~ (url.long_url | length > 50 ? '...' : '') }}
+                    </a>
+                </td>
+                <td>{{ url.economy_rate | number_format(2) }}%</td>
+                <td>{{ url.created_at | date("d/m/Y H:i:s") }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-center">Nenhuma URL foi encurtada recentemente.</p>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
+{% endblock %}
