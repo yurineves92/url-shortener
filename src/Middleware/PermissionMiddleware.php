@@ -19,11 +19,12 @@ class PermissionMiddleware
         $this->container = $container;
     }
 
-    // TODO: verificar jeito melhor de verificar permissão.
     public function __invoke(Request $request, RequestHandler $handler): Response
     {
         $user = $_SESSION;
 
+        $routePath = $request->getUri()->getPath();
+        
         if (!isset($user['user_role_id'])) {
             return $this->redirect('/unauthorized');
         }
@@ -31,9 +32,8 @@ class PermissionMiddleware
         $pdo = $this->container->get('pdo');
         $roleModel = new RoleModel($pdo);
         $permissions = $roleModel->getPermissionsByRoleId($user['user_role_id']);
-
-
-        if (!array_intersect($permissions, $this->requiredPermissions)) {
+        
+        if (!in_array($routePath, $permissions)) {
             return $this->redirect('/unauthorized');
         }
 

@@ -14,7 +14,6 @@ return function (App $app) {
 
     $adminMiddleware = new PermissionMiddleware(['administrador'], $container);
     $userMiddleware = new PermissionMiddleware(['usuário', 'administrador'], $container);
-    $guestMiddleware = new PermissionMiddleware(['convidado', 'usuário', 'administrador'], $container);
 
     $app->get('/login', [AuthController::class, 'showLoginForm'])->setName('login');
     $app->post('/login', [AuthController::class, 'login']);
@@ -35,11 +34,11 @@ return function (App $app) {
     $app->get('/not-found', [ErrorController::class, 'error'])->setName('error');
     $app->get('/unauthorized', [ErrorController::class, 'unauthorized'])->setName('unauthorized');
 
-    $app->get('/', [UrlController::class, 'home'])->setName('home')->add($guestMiddleware);
-    $app->post('/shorten', [UrlController::class, 'shorten'])->setName('shorten')->add($userMiddleware);
-    $app->get('/recent-urls', [UrlController::class, 'recentUrls'])->setName('recentUrls')->add($userMiddleware);
-    $app->get('/{short_url_path:[a-zA-Z0-9]+}', [UrlController::class, 'redirect'])->setName('redirect')->add($userMiddleware);
-    $app->get('/qrcode/{short_url_path:[a-zA-Z0-9]+}', [UrlController::class, 'generateQrCode'])->setName('generateQrCode')->add($userMiddleware);
+    $app->get('/', [UrlController::class, 'home'])->setName('home');
+    $app->post('/shorten', [UrlController::class, 'shorten'])->setName('shorten');
+    $app->get('/recent-urls', [UrlController::class, 'recentUrls'])->setName('recentUrls');
+    $app->get('/{short_url_path:[a-zA-Z0-9]+}', [UrlController::class, 'redirect'])->setName('redirect');
+    $app->get('/qrcode/{short_url_path:[a-zA-Z0-9]+}', [UrlController::class, 'generateQrCode'])->setName('generateQrCode');
 
 
     $app->any('/{any:.*}', function ($request, $response) {

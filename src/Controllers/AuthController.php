@@ -51,7 +51,7 @@ class AuthController
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_role_id'] = $user['role_id'];
-    
+
                 return $response->withHeader('Location', '/')->withStatus(302);
             } else {
                 $message = 'E-mail ou senha incorretos.';
