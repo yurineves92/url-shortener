@@ -1,13 +1,21 @@
 <?php
 
+use App\Controllers\AuthController;
 use App\Controllers\ErrorController;
+
 use Slim\Factory\AppFactory;
+
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
+
 use DI\Container;
+
 use App\Controllers\UrlController;
+
 use App\Twig\TwigExtension;
+
 use Slim\Interfaces\RouteParserInterface;
+
 use Dotenv\Dotenv;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -16,13 +24,18 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
 $container = new Container();
-
 $app = AppFactory::createFromContainer($container);
+
+session_start();
 
 $container->set('view', function ($container) use ($app) {
     $twig = Twig::create(__DIR__ . '/../src/Views', ['cache' => false]);
     $router = $container->get(RouteParserInterface::class);
     $twig->addExtension(new TwigExtension($router));
+
+    require __DIR__ . '/../src/Config/twig_config.php';
+    configureTwig($twig->getEnvironment());
+
     return $twig;
 });
 
@@ -35,6 +48,13 @@ $container->set('pdo', function () {
 
 $container->set(RouteParserInterface::class, function ($container) use ($app) {
     return $app->getRouteCollector()->getRouteParser();
+});
+
+$container->set(AuthController::class, function (Container $container) {
+    return new AuthController(
+        $container->get('view'),
+        $container->get('pdo')
+    );
 });
 
 $container->set(UrlController::class, function (Container $container) {

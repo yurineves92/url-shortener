@@ -8,6 +8,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class ErrorController
 {
+    private $view;
+    
     public function __construct(Twig $view)
     {
         $this->view = $view;

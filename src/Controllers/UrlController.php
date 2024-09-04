@@ -85,6 +85,7 @@ class UrlController
     public function recentUrls(Request $request, Response $response): Response
     {
         $recentUrls = $this->urlModel->getRecentUrls();
+        
         return $this->view->render($response, 'recent_urls.twig', [
             'recent_urls' => $recentUrls,
             'current_route' => 'recentUrls'

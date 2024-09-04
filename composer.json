@@ -17,6 +17,7 @@
         "symfony/yaml": "^6.4",
         "php-di/php-di": "^7.0",
         "vlucas/phpdotenv": "^5.3",
-        "endroid/qr-code": "^5.0"
+        "endroid/qr-code": "^5.0",
+        "symfony/http-foundation": "^6.4"
     }
 }

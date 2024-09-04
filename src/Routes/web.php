@@ -5,9 +5,17 @@ namespace App\Routes;
 use Slim\App;
 use App\Controllers\UrlController;
 use App\Controllers\ErrorController;
+use App\Controllers\AuthController;
 
 return function (App $app) {
-    // Url Routes
+    // Auth routes
+    $app->get('/login', [AuthController::class, 'showLoginForm'])->setName('login');
+    $app->post('/login', [AuthController::class, 'login']);
+    $app->get('/register', [AuthController::class, 'showRegisterForm'])->setName('register');
+    $app->post('/register', [AuthController::class, 'register']);
+    $app->get('/logout', [AuthController::class, 'logout'])->setName('logout');
+
+    // Url routes
     $app->get('/', [UrlController::class, 'home'])->setName('home');
     $app->post('/shorten', [UrlController::class, 'shorten'])->setName('shorten');
     $app->get('/{short_url_path:[a-zA-Z0-9]+}', [UrlController::class, 'redirect'])->setName('redirect');
