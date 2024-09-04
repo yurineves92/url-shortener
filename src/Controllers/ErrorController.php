@@ -19,4 +19,9 @@ class ErrorController
     {
         return $this->view->render($response, 'error.twig');
     }
+
+    public function unauthorized(Request $request, Response $response): Response
+    {
+        return $this->view->render($response, 'unauthorized.twig');
+    }
 }
