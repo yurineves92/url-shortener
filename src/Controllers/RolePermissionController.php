@@ -5,25 +5,24 @@ namespace App\Controllers;
 use Slim\Views\Twig;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use PDO;
+use App\Models\RolePermission;
 use Exception;
-
+use PDO;
 class RolePermissionController
 {
     protected $view;
-    private $pdo;
+    private $rolePermissionModel;
 
     public function __construct(Twig $view, PDO $pdo)
     {
         $this->view = $view;
-        $this->pdo = $pdo;
+        $this->rolePermissionModel = new RolePermission($pdo);
     }
 
     public function listRoles(Request $request, Response $response): Response
     {
         try {
-            $stmt = $this->pdo->query("SELECT * FROM roles");
-            $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $roles = $this->rolePermissionModel->getAllRoles();
 
             return $this->view->render($response, 'role_permission/roles.twig', [
                 'roles' => $roles
@@ -54,8 +53,7 @@ class RolePermissionController
         }
 
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO roles (name) VALUES (:name)");
-            $stmt->execute(['name' => $name]);
+            $this->rolePermissionModel->createRole($name);
 
             return $response->withHeader('Location', '/roles')->withStatus(302);
         } catch (Exception $e) {
@@ -69,8 +67,7 @@ class RolePermissionController
     public function listPermissions(Request $request, Response $response): Response
     {
         try {
-            $stmt = $this->pdo->query("SELECT * FROM permissions");
-            $permissions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $permissions = $this->rolePermissionModel->getAllPermissions();
 
             return $this->view->render($response, 'role_permission/permissions.twig', [
                 'permissions' => $permissions
@@ -101,8 +98,7 @@ class RolePermissionController
         }
 
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO permissions (name) VALUES (:name)");
-            $stmt->execute(['name' => $name]);
+            $this->rolePermissionModel->createPermission($name);
 
             return $response->withHeader('Location', '/permissions')->withStatus(302);
         } catch (Exception $e) {
@@ -116,11 +112,8 @@ class RolePermissionController
     public function linkRolePermissionForm(Request $request, Response $response): Response
     {
         try {
-            $rolesStmt = $this->pdo->query("SELECT * FROM roles");
-            $roles = $rolesStmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $permissionsStmt = $this->pdo->query("SELECT * FROM permissions");
-            $permissions = $permissionsStmt->fetchAll(PDO::FETCH_ASSOC);
+            $roles = $this->rolePermissionModel->getAllRoles();
+            $permissions = $this->rolePermissionModel->getAllPermissions();
 
             return $this->view->render($response, 'role_permission/link_role_permission.twig', [
                 'roles' => $roles,
@@ -148,11 +141,7 @@ class RolePermissionController
         }
 
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO role_permissions (role_id, permission_id) VALUES (:role_id, :permission_id)");
-            $stmt->execute([
-                'role_id' => $roleId,
-                'permission_id' => $permissionId
-            ]);
+            $this->rolePermissionModel->linkRolePermission($roleId, $permissionId);
 
             return $response->withHeader('Location', '/roles-permissions')->withStatus(302);
         } catch (Exception $e) {
@@ -166,11 +155,8 @@ class RolePermissionController
     public function unlinkRolePermissionForm(Request $request, Response $response): Response
     {
         try {
-            $rolesStmt = $this->pdo->query("SELECT * FROM roles");
-            $roles = $rolesStmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $permissionsStmt = $this->pdo->query("SELECT * FROM permissions");
-            $permissions = $permissionsStmt->fetchAll(PDO::FETCH_ASSOC);
+            $roles = $this->rolePermissionModel->getAllRoles();
+            $permissions = $this->rolePermissionModel->getAllPermissions();
 
             return $this->view->render($response, 'role_permission/unlink_role_permission.twig', [
                 'roles' => $roles,
@@ -198,17 +184,37 @@ class RolePermissionController
         }
 
         try {
-            $stmt = $this->pdo->prepare("DELETE FROM role_permissions WHERE role_id = :role_id AND permission_id = :permission_id");
-            $stmt->execute([
-                'role_id' => $roleId,
-                'permission_id' => $permissionId
-            ]);
+            $this->rolePermissionModel->unlinkRolePermission($roleId, $permissionId);
 
             return $response->withHeader('Location', '/roles-permissions')->withStatus(302);
         } catch (Exception $e) {
             return $this->view->render($response, 'role_permission/unlink_role_permission.twig', [
                 'message' => 'Error unlinking role from permission: ' . $e->getMessage(),
                 'alertType' => 'danger'
+            ]);
+        }
+    }
+
+    public function listRolePermissions(Request $request, Response $response): Response
+    {
+        $roles = [];
+        try {
+            $rolesData = $this->rolePermissionModel->getAllRoles();
+            foreach ($rolesData as $role) {
+                $permissions = $this->rolePermissionModel->getPermissionsForRole($role['id']);
+                $roles[] = [
+                    'role' => $role,
+                    'permissions' => $permissions
+                ];
+            }
+
+            return $this->view->render($response, 'role_permission/roles_permissions.twig', [
+                'roles' => $roles
+            ]);
+        } catch (Exception $e) {
+            error_log('Error listing roles and permissions: ' . $e->getMessage());
+            return $this->view->render($response, 'error.twig', [
+                'message' => 'Error listing roles and permissions.'
             ]);
         }
     }

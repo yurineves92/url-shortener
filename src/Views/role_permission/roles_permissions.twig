@@ -1,0 +1,38 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Listar Perfis e Permissões</h1>
+    
+    {% if roles is not empty %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Perfil</th>
+                    <th>Permissões</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for role in roles %}
+                    <tr>
+                        <td>{{ role.role.name }}</td>
+                        <td>
+                            {% if role.permissions is empty %}
+                                Nenhuma permissão
+                            {% else %}
+                                <ul>
+                                    {% for permission in role.permissions %}
+                                        <li>{{ permission.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhum perfil encontrado.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -6,6 +6,10 @@
     
     {% include 'message/_alert.twig' %}
 
+    <div>
+        <a href="{{ path_for('createPermission') }}" class="btn btn-primary">Criar Nova Permissão</a>
+    </div>
+
     {% if permissions is not empty %}
     <div class="table-responsive">
         <table class="table table-bordered mt-4">

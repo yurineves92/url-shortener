@@ -6,6 +6,10 @@
     
     {% include 'message/_alert.twig' %}
 
+    <div>
+        <a href="{{ path_for('createRole') }}" class="btn btn-primary">Criar Novo Perfil</a>
+    </div>
+
     {% if roles is not empty %}
     <div class="table-responsive">
         <table class="table table-bordered mt-4">

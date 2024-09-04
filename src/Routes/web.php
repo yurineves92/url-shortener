@@ -27,7 +27,8 @@ return function (App $app) {
     $app->post('/roles-permissions/link', [RolePermissionController::class, 'linkRolePermission']);
     $app->get('/roles-permissions/unlink', [RolePermissionController::class, 'unlinkRolePermissionForm'])->setName('unlinkRolePermission');
     $app->post('/roles-permissions/unlink', [RolePermissionController::class, 'unlinkRolePermission']);
-
+    $app->get('/roles-permissions', [RolePermissionController::class, 'listRolePermissions'])->setName('listRolePermissions');
+    
     // Url routes
     $app->get('/', [UrlController::class, 'home'])->setName('home');
     $app->post('/shorten', [UrlController::class, 'shorten'])->setName('shorten');
