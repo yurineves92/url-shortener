@@ -2,7 +2,7 @@
 
 use App\Controllers\AuthController;
 use App\Controllers\ErrorController;
-
+use App\Controllers\RolePermissionController;
 use Slim\Factory\AppFactory;
 
 use Slim\Views\Twig;
@@ -52,6 +52,13 @@ $container->set(RouteParserInterface::class, function ($container) use ($app) {
 
 $container->set(AuthController::class, function (Container $container) {
     return new AuthController(
+        $container->get('view'),
+        $container->get('pdo')
+    );
+});
+
+$container->set(RolePermissionController::class, function (Container $container) {
+    return new RolePermissionController(
         $container->get('view'),
         $container->get('pdo')
     );

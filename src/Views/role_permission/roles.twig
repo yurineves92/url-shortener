@@ -1,0 +1,32 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Perfil de Acesso</h1>
+    
+    {% include 'message/_alert.twig' %}
+
+    {% if roles is not empty %}
+    <div class="table-responsive">
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for role in roles %}
+                <tr>
+                    <td>{{ role.id }}</td>
+                    <td>{{ role.name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-center">Nenhum perfil encontrado.</p>
+    {% endif %}
+</div>
+{% endblock %}

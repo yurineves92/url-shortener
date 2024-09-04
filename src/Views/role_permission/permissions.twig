@@ -1,0 +1,32 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Permissão</h1>
+    
+    {% include 'message/_alert.twig' %}
+
+    {% if permissions is not empty %}
+    <div class="table-responsive">
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for permission in permissions %}
+                <tr>
+                    <td>{{ permission.id }}</td>
+                    <td>{{ permission.name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-center">Nenhuma permissão encontrada.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <h2 class="text-center">Criar Nova Permissão</h2>
+
+        {% include 'message/_alert.twig' %}
+
+        <form method="POST" action="{{ path_for('createPermission') }}" class="mt-4">
+            <div class="mb-3">
+                <label for="name" class="form-label">Nome da Permissão</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Insira o nome da permission" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Criar Permissão</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

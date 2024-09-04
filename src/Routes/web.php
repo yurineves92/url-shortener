@@ -6,6 +6,7 @@ use Slim\App;
 use App\Controllers\UrlController;
 use App\Controllers\ErrorController;
 use App\Controllers\AuthController;
+use App\Controllers\RolePermissionController;
 
 return function (App $app) {
     // Auth routes
@@ -14,6 +15,18 @@ return function (App $app) {
     $app->get('/register', [AuthController::class, 'showRegisterForm'])->setName('register');
     $app->post('/register', [AuthController::class, 'register']);
     $app->get('/logout', [AuthController::class, 'logout'])->setName('logout');
+
+    // Role and Permission routes
+    $app->get('/roles', [RolePermissionController::class, 'listRoles'])->setName('listRoles');
+    $app->get('/roles/create', [RolePermissionController::class, 'createRoleForm'])->setName('createRole');
+    $app->post('/roles/create', [RolePermissionController::class, 'createRole']);
+    $app->get('/permissions', [RolePermissionController::class, 'listPermissions'])->setName('listPermissions');
+    $app->get('/permissions/create', [RolePermissionController::class, 'createPermissionForm'])->setName('createPermission');
+    $app->post('/permissions/create', [RolePermissionController::class, 'createPermission']);
+    $app->get('/roles-permissions/link', [RolePermissionController::class, 'linkRolePermissionForm'])->setName('linkRolePermission');
+    $app->post('/roles-permissions/link', [RolePermissionController::class, 'linkRolePermission']);
+    $app->get('/roles-permissions/unlink', [RolePermissionController::class, 'unlinkRolePermissionForm'])->setName('unlinkRolePermission');
+    $app->post('/roles-permissions/unlink', [RolePermissionController::class, 'unlinkRolePermission']);
 
     // Url routes
     $app->get('/', [UrlController::class, 'home'])->setName('home');

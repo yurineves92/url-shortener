@@ -12,15 +12,19 @@
                 <li class="nav-item">
                     <a class="nav-link {% if current_route == 'recentUrls' %}active{% endif %}" href="{{ path_for('recentUrls') }}">URL Recentes</a>
                 </li>
-
                 {% if is_logged_in %}
                     {% if user_role_id == 1 %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if current_route == 'permissions' %}active{% endif %}" href="#" id="permissionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle {% if current_route in ['listRoles', 'createRole', 'listPermissions', 'createPermission', 'linkRolePermission', 'unlinkRolePermission'] %}active{% endif %}" href="#" id="rolesPermissionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Controle de Permissões
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="permissionsDropdown">
-                            <li><a class="dropdown-item {% if current_route == 'adminProfiles' %}active{% endif %}" href="">Perfis</a></li>
+                        <ul class="dropdown-menu" aria-labelledby="rolesPermissionsDropdown">
+                            <li><a class="dropdown-item {% if current_route == 'listRoles' %}active{% endif %}" href="{{ path_for('listRoles') }}">Listar Perfil</a></li>
+                            <li><a class="dropdown-item {% if current_route == 'createRole' %}active{% endif %}" href="{{ path_for('createRole') }}">Criar Perfil</a></li>
+                            <li><a class="dropdown-item {% if current_route == 'listPermissions' %}active{% endif %}" href="{{ path_for('listPermissions') }}">Listar Permissão</a></li>
+                            <li><a class="dropdown-item {% if current_route == 'createPermission' %}active{% endif %}" href="{{ path_for('createPermission') }}">Criar Permissão</a></li>
+                            <li><a class="dropdown-item {% if current_route == 'linkRolePermission' %}active{% endif %}" href="{{ path_for('linkRolePermission') }}">Vincular Perfil e Permissão</a></li>
+                            <li><a class="dropdown-item {% if current_route == 'unlinkRolePermission' %}active{% endif %}" href="{{ path_for('unlinkRolePermission') }}">Desvincular Perfil e Permissão</a></li>
                         </ul>
                     </li>
                     {% endif %}
