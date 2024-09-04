@@ -33,7 +33,7 @@ $container->set('view', function ($container) use ($app) {
     $router = $container->get(RouteParserInterface::class);
     $twig->addExtension(new TwigExtension($router));
 
-    require __DIR__ . '/../src/Config/twig_config.php';
+    require __DIR__ . '/../src/Config/TwigConfig.php';
     configureTwig($twig->getEnvironment());
 
     return $twig;

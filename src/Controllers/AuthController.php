@@ -5,19 +5,19 @@ namespace App\Controllers;
 use Slim\Views\Twig;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-use PDO;
+use App\Models\User;
 use Exception;
+use PDO;
 
 class AuthController
 {
     protected $view;
-    private $pdo;
+    private $userModel;
 
     public function __construct(Twig $view, PDO $pdo)
     {
         $this->view = $view;
-        $this->pdo = $pdo;
+        $this->userModel = new User($pdo);
     }
 
     public function showLoginForm(Request $request, Response $response): Response
@@ -45,14 +45,12 @@ class AuthController
         }
     
         try {
-            $stmt = $this->pdo->prepare("SELECT id, email, password FROM users WHERE email = :email");
-            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-            $stmt->execute();
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user = $this->userModel->getUserByEmail($email);
     
             if ($user && password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_email'] = $user['email'];
+                $_SESSION['user_role_id'] = $user['role_id'];
     
                 return $response->withHeader('Location', '/')->withStatus(302);
             } else {
@@ -78,7 +76,6 @@ class AuthController
             ]);
         }
     }
-    
     
     public function logout(Request $request, Response $response): Response
     {
@@ -107,27 +104,24 @@ class AuthController
         }
 
         try {
-            $stmt = $this->pdo->prepare("SELECT id FROM users WHERE email = :email");
-            $stmt->execute(['email' => $email]);
-            if ($stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($this->userModel->userExists($email)) {
                 return $this->view->render($response, 'auth/register.twig', [
                     'message' => 'E-mail já está em uso.',
                     'alertType' => 'danger'
                 ]);
             }
 
-            $stmt = $this->pdo->prepare("INSERT INTO users (email, password, active, role_id) VALUES (:email, :password, :active, :role_id)");
-            $stmt->execute([
-                'email' => $email,
-                'password' => password_hash($password, PASSWORD_DEFAULT),
-                'active' => 1,
-                'role_id' => 2
-            ]);
-
-            return $this->view->render($response, 'auth/login.twig', [
-                'message' => 'Registro bem-sucedido! Agora você pode fazer login.',
-                'alertType' => 'success'
-            ]);
+            if ($this->userModel->createUser($email, $password, 2)) {
+                return $this->view->render($response, 'auth/login.twig', [
+                    'message' => 'Registro bem-sucedido! Agora você pode fazer login.',
+                    'alertType' => 'success'
+                ]);
+            } else {
+                return $this->view->render($response, 'auth/register.twig', [
+                    'message' => 'Erro ao registrar. Tente novamente.',
+                    'alertType' => 'danger'
+                ]);
+            }
         } catch (Exception $e) {
             return $this->view->render($response, 'auth/register.twig', [
                 'message' => 'Erro ao registrar: ' . $e->getMessage(),
