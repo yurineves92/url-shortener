@@ -18,16 +18,15 @@ return function (App $app) {
 
     // Role and Permission routes
     $app->get('/roles', [RolePermissionController::class, 'listRoles'])->setName('listRoles');
-    $app->get('/roles/create', [RolePermissionController::class, 'createRoleForm'])->setName('createRole');
-    $app->post('/roles/create', [RolePermissionController::class, 'createRole']);
+    $app->get('/roles/form', [RolePermissionController::class, 'createRoleForm'])->setName('createRoleForm');
+    $app->post('/roles/create', [RolePermissionController::class, 'createRole'])->setName('createRole');
     $app->get('/permissions', [RolePermissionController::class, 'listPermissions'])->setName('listPermissions');
-    $app->get('/permissions/create', [RolePermissionController::class, 'createPermissionForm'])->setName('createPermission');
-    $app->post('/permissions/create', [RolePermissionController::class, 'createPermission']);
-    $app->get('/roles-permissions/link', [RolePermissionController::class, 'linkRolePermissionForm'])->setName('linkRolePermission');
-    $app->post('/roles-permissions/link', [RolePermissionController::class, 'linkRolePermission']);
-    $app->get('/roles-permissions/unlink', [RolePermissionController::class, 'unlinkRolePermissionForm'])->setName('unlinkRolePermission');
-    $app->post('/roles-permissions/unlink', [RolePermissionController::class, 'unlinkRolePermission']);
+    $app->get('/permissions/form', [RolePermissionController::class, 'createPermissionForm'])->setName('createPermissionForm');
+    $app->post('/permissions/create', [RolePermissionController::class, 'createPermission'])->setName('createPermission');
     $app->get('/roles-permissions', [RolePermissionController::class, 'listRolePermissions'])->setName('listRolePermissions');
+    $app->get('/roles-permissions/{type}', [RolePermissionController::class, 'showRolePermissionForm'])->setName('rolePermissionForm');
+    $app->post('/roles-permissions/{type}', [RolePermissionController::class, 'processRolePermission'])->setName('processRolePermission');
+
     
     // Url routes
     $app->get('/', [UrlController::class, 'home'])->setName('home');

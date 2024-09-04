@@ -109,87 +109,78 @@ class RolePermissionController
         }
     }
 
-    public function linkRolePermissionForm(Request $request, Response $response): Response
+    public function showRolePermissionForm(Request $request, Response $response, $type): Response
     {
+        if (is_array($type)) {
+            $type = reset($type);
+        }
+    
+        if (!is_string($type) || !in_array($type, ['link', 'unlink'])) {
+            return $this->view->render($response, 'error.twig', [
+                'message' => 'Tipo de ação inválido.'
+            ]);
+        }
+    
         try {
             $roles = $this->rolePermissionModel->getAllRoles();
             $permissions = $this->rolePermissionModel->getAllPermissions();
-
-            return $this->view->render($response, 'role_permission/link_role_permission.twig', [
+    
+            return $this->view->render($response, "role_permission/{$type}_role_permission.twig", [
                 'roles' => $roles,
                 'permissions' => $permissions
             ]);
         } catch (Exception $e) {
-            error_log('Error displaying link role-permission form: ' . $e->getMessage());
+
+            error_log('Error displaying role-permission form: ' . $e->getMessage());
             return $this->view->render($response, 'error.twig', [
-                'message' => 'Error displaying link role-permission form.'
+                'message' => 'Erro ao exibir o formulário de perfil e permissão.'
             ]);
         }
     }
-
-    public function linkRolePermission(Request $request, Response $response): Response
+    
+    public function processRolePermission(Request $request, Response $response, $type): Response
     {
+        if (is_array($type)) {
+            $type = reset($type);
+        }
+    
+        if (!is_string($type) || !in_array($type, ['link', 'unlink'])) {
+            return $this->view->render($response, 'error.twig', [
+                'message' => 'Tipo de ação inválido.'
+            ]);
+        }
+        
+        if (!in_array($type, ['link', 'unlink'])) {
+            return $this->view->render($response, "role_permission/{$type}_role_permission.twig", [
+                'message' => 'Tipo de ação inválido.',
+                'alertType' => 'danger'
+            ]);
+        }
+    
         $params = (array)$request->getParsedBody();
         $roleId = $params['role_id'] ?? '';
         $permissionId = $params['permission_id'] ?? '';
-
+    
         if (empty($roleId) || empty($permissionId)) {
-            return $this->view->render($response, 'role_permission/link_role_permission.twig', [
-                'message' => 'Role ID and Permission ID cannot be empty.',
+            return $this->view->render($response, "role_permission/{$type}_role_permission.twig", [
+                'message' => 'Role ID e Permission ID não podem estar vazios.',
                 'alertType' => 'danger'
             ]);
         }
-
+    
         try {
-            $this->rolePermissionModel->linkRolePermission($roleId, $permissionId);
-
+            if ($type === 'link') {
+                $this->rolePermissionModel->linkRolePermission($roleId, $permissionId);
+                $message = 'Permissão vinculada com sucesso.';
+            } elseif ($type === 'unlink') {
+                $this->rolePermissionModel->unlinkRolePermission($roleId, $permissionId);
+                $message = 'Permissão desvinculada com sucesso.';
+            }
+    
             return $response->withHeader('Location', '/roles-permissions')->withStatus(302);
         } catch (Exception $e) {
-            return $this->view->render($response, 'role_permission/link_role_permission.twig', [
-                'message' => 'Error linking role to permission: ' . $e->getMessage(),
-                'alertType' => 'danger'
-            ]);
-        }
-    }
-
-    public function unlinkRolePermissionForm(Request $request, Response $response): Response
-    {
-        try {
-            $roles = $this->rolePermissionModel->getAllRoles();
-            $permissions = $this->rolePermissionModel->getAllPermissions();
-
-            return $this->view->render($response, 'role_permission/unlink_role_permission.twig', [
-                'roles' => $roles,
-                'permissions' => $permissions
-            ]);
-        } catch (Exception $e) {
-            error_log('Error displaying unlink role-permission form: ' . $e->getMessage());
-            return $this->view->render($response, 'error.twig', [
-                'message' => 'Error displaying unlink role-permission form.'
-            ]);
-        }
-    }
-
-    public function unlinkRolePermission(Request $request, Response $response): Response
-    {
-        $params = (array)$request->getParsedBody();
-        $roleId = $params['role_id'] ?? '';
-        $permissionId = $params['permission_id'] ?? '';
-
-        if (empty($roleId) || empty($permissionId)) {
-            return $this->view->render($response, 'role_permission/unlink_role_permission.twig', [
-                'message' => 'Role ID and Permission ID cannot be empty.',
-                'alertType' => 'danger'
-            ]);
-        }
-
-        try {
-            $this->rolePermissionModel->unlinkRolePermission($roleId, $permissionId);
-
-            return $response->withHeader('Location', '/roles-permissions')->withStatus(302);
-        } catch (Exception $e) {
-            return $this->view->render($response, 'role_permission/unlink_role_permission.twig', [
-                'message' => 'Error unlinking role from permission: ' . $e->getMessage(),
+            return $this->view->render($response, "role_permission/{$type}_role_permission.twig", [
+                'message' => 'Erro ao ' . ($type === 'link' ? 'vincular' : 'desvincular') . ' permissão ao perfil: ' . $e->getMessage(),
                 'alertType' => 'danger'
             ]);
         }

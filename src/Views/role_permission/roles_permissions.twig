@@ -10,6 +10,7 @@
                 <tr>
                     <th>Perfil</th>
                     <th>Permissões</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,10 +23,20 @@
                             {% else %}
                                 <ul>
                                     {% for permission in role.permissions %}
-                                        <li>{{ permission.name }}</li>
+                                        <li class="mb-1">
+                                            {{ permission.name }}
+                                            <form method="post" action="{{ path_for('processRolePermission', { type: 'unlink' }) }}" style="display:inline;">
+                                                <input type="hidden" name="role_id" value="{{ role.role.id }}">
+                                                <input type="hidden" name="permission_id" value="{{ permission.id }}">
+                                                <button type="submit" class="btn btn-danger btn-sm">X</button>
+                                            </form>
+                                        </li>
                                     {% endfor %}
                                 </ul>
                             {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path_for('rolePermissionForm', { type: 'link' }) }}" class="btn btn-primary btn-sm">Vincular Permissão</a>
                         </td>
                     </tr>
                 {% endfor %}

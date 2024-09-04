@@ -7,7 +7,7 @@
 
         {% include 'message/_alert.twig' %}
 
-        <form method="POST" action="{{ path_for('linkRolePermission') }}" class="mt-4">
+        <form method="POST" action="{{ path_for('processRolePermission', { type: 'link' }) }}" class="mt-4">
             <div class="mb-3">
                 <label for="role_id" class="form-label">Perfil</label>
                 <select class="form-select" id="role_id" name="role_id" required>
