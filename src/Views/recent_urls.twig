@@ -7,34 +7,42 @@
     {% include 'message/_alert.twig' %}
     
     {% if recent_urls is not empty %}
-    <table class="table table-bordered mt-4">
-        <thead>
-            <tr>
-                <th>URL Encurtada</th>
-                <th>URL Original</th>
-                <th>Taxa de Economia</th>
-                <th>Data de Criação</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for url in recent_urls %}
-            <tr>
-                <td><a href="{{ url.short_url_path }}" target="_blank">{{ url.short_url_path }}</a></td>
-                <td>
-                    <a href="{{ url.long_url }}" target="_blank"
-                       class="text-truncate"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="top"
-                       title="{{ url.long_url }}">
-                       {{ url.long_url | slice(0, 50) ~ (url.long_url | length > 50 ? '...' : '') }}
-                    </a>
-                </td>
-                <td>{{ url.economy_rate | number_format(2) }}%</td>
-                <td>{{ url.created_at | date("d/m/Y H:i:s") }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th>URL Encurtada</th>
+                    <th>URL Original</th>
+                    <th>Taxa de Economia</th>
+                    <th>Data de Criação</th>
+                    <th>QR Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for url in recent_urls %}
+                <tr>
+                    <td><a href="{{ url.short_url_path }}" target="_blank">{{ url.short_url_path }}</a></td>
+                    <td>
+                        <a href="{{ url.long_url }}" target="_blank"
+                        class="text-truncate"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="{{ url.long_url }}">
+                        {{ url.long_url | slice(0, 50) ~ (url.long_url | length > 50 ? '...' : '') }}
+                        </a>
+                    </td>
+                    <td>{{ url.economy_rate | number_format(2) }}%</td>
+                    <td>{{ url.created_at | date("d/m/Y H:i:s") }}</td>
+                    <td>
+                        <a href="{{ path_for('generateQrCode', { 'short_url_path': url.short_url_path }) }}" target="_blank">
+                            <img src="{{ path_for('generateQrCode', { 'short_url_path': url.short_url_path }) }}" alt="QR Code" style="width: 100px; height: 100px;">
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% else %}
     <p class="text-center">Nenhuma URL foi encurtada recentemente.</p>
     {% endif %}

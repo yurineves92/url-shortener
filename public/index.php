@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\ErrorController;
 use Slim\Factory\AppFactory;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
@@ -40,6 +41,12 @@ $container->set(UrlController::class, function (Container $container) {
     return new UrlController(
         $container->get('view'),
         $container->get('pdo')
+    );
+});
+
+$container->set(ErrorController::class, function (Container $container) {
+    return new ErrorController(
+        $container->get('view')
     );
 });
 
